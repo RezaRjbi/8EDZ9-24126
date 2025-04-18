@@ -2,7 +2,7 @@ def get_seat_cost() -> int:
     return 5
 
 
-def cal_seats_to_book(required_seats: int, table_seats: int) -> int:
+def calc_seats_to_book(required_seats: int, table_seats: int) -> int:
     if required_seats % 2 != 0 and required_seats < table_seats:
         return required_seats + 1
     return required_seats
