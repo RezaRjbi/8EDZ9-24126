@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -92,7 +93,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
 
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Booking - Pars Tasmim",
+    "DESCRIPTION": "Pars tasmim code challenge",
+    "VERSION": "1.0.0",
+}
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
