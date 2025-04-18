@@ -8,7 +8,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -17,28 +16,68 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Table',
+            name="Table",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('seats', models.PositiveIntegerField(default=functools.partial(random.Random.randrange, *(4, 11), **{}))),
-                ('is_available', models.BooleanField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "seats",
+                    models.PositiveIntegerField(
+                        default=functools.partial(
+                            random.Random.randrange, *(4, 11), **{}
+                        )
+                    ),
+                ),
+                ("is_available", models.BooleanField()),
             ],
             options={
-                'indexes': [models.Index(fields=['seats'], name='bookings_ta_seats_c4bbeb_idx')],
+                "indexes": [
+                    models.Index(fields=["seats"], name="bookings_ta_seats_c4bbeb_idx")
+                ],
             },
         ),
         migrations.CreateModel(
-            name='Reservation',
+            name="Reservation",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('seats', models.PositiveIntegerField()),
-                ('cost', models.PositiveIntegerField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('table', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bookings.table')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("seats", models.PositiveIntegerField()),
+                ("cost", models.PositiveIntegerField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "table",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="bookings.table"
+                    ),
+                ),
             ],
             options={
-                'indexes': [models.Index(fields=['table_id'], name='bookings_re_table_i_92392b_idx')],
+                "indexes": [
+                    models.Index(
+                        fields=["table_id"], name="bookings_re_table_i_92392b_idx"
+                    )
+                ],
             },
         ),
     ]
