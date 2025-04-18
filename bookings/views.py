@@ -1,6 +1,6 @@
 from django.db import transaction
 from rest_framework.views import APIView, Response
-from rest_framework import permissions, status
+from rest_framework import permissions, status, generics
 
 from .cruds import reserve_table
 from .helpers import calc_total_cost, cal_seats_to_book
@@ -49,3 +49,23 @@ class BookingView(APIView):
             ).data,
             status=200,
         )
+
+
+class RetrieveReservationView(generics.RetrieveAPIView):
+    serializer_class = ReservationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Reservation.objects.filter(user=self.request.user)
+
+
+class CancelReservation(generics.DestroyAPIView):
+    serializer_class = ReservationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Reservation.objects.filter(user=self.request.user)
+
+    def perform_destroy(self, instance: Reservation):
+        Table.objects.filter(id=instance.table_id).update(is_available=True)
+        super().perform_destroy(instance)
