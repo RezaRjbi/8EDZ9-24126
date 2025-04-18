@@ -28,15 +28,15 @@ docker-compose up --build
 App will be available at: http://localhost:8000
 
 ### API Endpoints
-- POST /book/ – Create a booking
+- `POST /book/` – Create a booking
 
-`GET /book/` – List user's bookings
+- `GET /book/` – List user's bookings
 
-`GET /book/<id>/` – Retrieve a booking
+- `GET /book/<id>/` – Retrieve a booking
 
-`DELETE /cancel/<id>/` – Cancel a booking
+- `DELETE /cancel/<id>/` – Cancel a booking
 
 ### Running Tests
 ```bash
-docker-compose run web python manage.py test
+docker-compose run app python manage.py test
 ```
