@@ -25,6 +25,11 @@ class Table(models.Model):
     class Meta:
         indexes = [models.Index(fields=["seats"])]
 
+    def __str__(self):
+        return (
+            f"{self.seats} seats table ({'' if self.is_available else 'not'} available)"
+        )
+
 
 class Reservation(models.Model):
     table = models.ForeignKey(Table, on_delete=models.CASCADE)
@@ -34,4 +39,7 @@ class Reservation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        indexes = [models.Index(fields=["table_id"])]
+        indexes = [models.Index(fields=["table_id"]), models.Index(fields=["user_id"])]
+
+    def __str__(self):
+        return f"Reservation for user: {self.user_id} for table: {self.table_id}"
