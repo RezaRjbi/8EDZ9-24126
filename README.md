@@ -36,6 +36,8 @@ App will be available at: http://localhost:8000
 
 - `DELETE /cancel/<id>/` – Cancel a booking
 
+- `GET /api/docs/swagger/` - OpenAPI Specification (Swagger UI)
+
 ### Running Tests
 ```bash
 docker-compose run app python manage.py test
