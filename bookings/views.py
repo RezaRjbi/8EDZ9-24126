@@ -1,2 +1,38 @@
-from rest_framework import generics
+from django.db import transaction
+from rest_framework.views import APIView, Response
+from rest_framework import permissions, status
 
+from .cruds import reserve_table
+from .helpers import calc_total_cost, cal_seats_to_book
+from .serializers import BookingSerializer
+from .models import Table
+from drf_spectacular.utils import extend_schema
+
+
+class BookingView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class: BookingSerializer = BookingSerializer
+    SEAT_COST = 5
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        required_seats = serializer.validated_data["number_of_people"]
+        least_cost = None
+        table_id = None
+        booked_seats = None
+        available_tables = Table.objects.get_values_list(required_seats, "pk", "seats")
+        for pk, seats in available_tables:
+            seat_to_book = cal_seats_to_book(required_seats, seats)
+            cost = calc_total_cost(seat_to_book, required_seats)
+            if least_cost is None or cost < least_cost:
+                least_cost = cost
+                table_id = pk
+                booked_seats = seat_to_book
+        if least_cost is None:
+            return Response(
+                {"detail": "No seats available."}, status=status.HTTP_404_NOT_FOUND
+            )
+        with transaction.atomic():
+            _ = reserve_table(table_id, request.user.id, least_cost, booked_seats)
+            return Response("Booking successful", status=status.HTTP_201_CREATED)
