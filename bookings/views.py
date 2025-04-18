@@ -4,8 +4,8 @@ from rest_framework import permissions, status
 
 from .cruds import reserve_table
 from .helpers import calc_total_cost, cal_seats_to_book
-from .serializers import BookingSerializer
-from .models import Table
+from .serializers import BookingSerializer, ReservationSerializer
+from .models import Table, Reservation
 from drf_spectacular.utils import extend_schema
 
 
@@ -34,5 +34,18 @@ class BookingView(APIView):
                 {"detail": "No seats available."}, status=status.HTTP_404_NOT_FOUND
             )
         with transaction.atomic():
-            _ = reserve_table(table_id, request.user.id, least_cost, booked_seats)
-            return Response("Booking successful", status=status.HTTP_201_CREATED)
+            reservation = reserve_table(
+                table_id, request.user.id, least_cost, booked_seats
+            )
+            return Response(
+                ReservationSerializer(reservation).data, status=status.HTTP_201_CREATED
+            )
+
+    @extend_schema(request=None, responses={200: ReservationSerializer(many=True)})
+    def get(self, request):
+        return Response(
+            ReservationSerializer(
+                Reservation.objects.filter(user=request.user).all(), many=True
+            ).data,
+            status=200,
+        )
