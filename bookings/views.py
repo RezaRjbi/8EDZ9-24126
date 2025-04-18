@@ -3,7 +3,7 @@ from rest_framework.views import APIView, Response
 from rest_framework import permissions, status, generics
 
 from .cruds import reserve_table
-from .helpers import calc_total_cost, cal_seats_to_book
+from .helpers import calc_total_cost, calc_seats_to_book
 from .serializers import BookingSerializer, ReservationSerializer
 from .models import Table, Reservation
 from drf_spectacular.utils import extend_schema
@@ -12,7 +12,6 @@ from drf_spectacular.utils import extend_schema
 class BookingView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class: BookingSerializer = BookingSerializer
-    SEAT_COST = 5
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -23,8 +22,8 @@ class BookingView(APIView):
         booked_seats = None
         available_tables = Table.objects.get_values_list(required_seats, "pk", "seats")
         for pk, seats in available_tables:
-            seat_to_book = cal_seats_to_book(required_seats, seats)
-            cost = calc_total_cost(seat_to_book, required_seats)
+            seat_to_book = calc_seats_to_book(required_seats, seats)
+            cost = calc_total_cost(seat_to_book, seats)
             if least_cost is None or cost < least_cost:
                 least_cost = cost
                 table_id = pk
